@@ -4,7 +4,7 @@ Simple AJAX library
 
 ## Installation
 
-Download from http://gitlab:1610/.
+Download from http://gitlab:1610/VladimirMarkovic86/ajax-lib.
 
 ## Usage
 
