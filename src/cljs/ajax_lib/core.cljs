@@ -29,7 +29,8 @@
              4)
           (= (aget xhr "status")
              200))
-   (do (.log js/console xhr)
+   (do (when (nil? (:dont-print-xhr params-map))
+         (.log js/console xhr))
        ((:success-fn params-map) xhr params-map))
    (let [error-fn (:error-fn params-map)
          error-fn (if error-fn

@@ -165,7 +165,7 @@
 	"Range")
 
 (defn referer
-	"Referer request-hedader field allows the client to specify,for the server's benefit, the address (URI) of the resource from which the Request-URI was obtained (the \"referrer\", although the header field is misspelled.) The Referer request-header allows a server to generate lists of back-links to resources for interest, logging, optimized caching, etc. It also allows obsolete or mistyped links to be traced for maintenance. The Referer field MUST NOT be sent if the Request-URI was obtained from a source that does not have its own URI, such as input from the user keyboard.
+	"Referer request-header field allows the client to specify,for the server's benefit, the address (URI) of the resource from which the Request-URI was obtained (the \"referrer\", although the header field is misspelled.) The Referer request-header allows a server to generate lists of back-links to resources for interest, logging, optimized caching, etc. It also allows obsolete or mistyped links to be traced for maintenance. The Referer field MUST NOT be sent if the Request-URI was obtained from a source that does not have its own URI, such as input from the user keyboard.
 	
 	example:	( <absoluteURI> | <relativeURI> )
 	
