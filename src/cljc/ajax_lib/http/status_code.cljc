@@ -1,5 +1,14 @@
 (ns ajax-lib.http.status-code)
 
+(defn status-code
+ ""
+ [status]
+ (case status
+   200 "200 OK"
+   404 "404 Not Found"
+   500 "500 Internal Server Error"
+   "404 Not Found"))
+
 (defn continue
 	 "Continue"
 	 []
@@ -256,7 +265,7 @@
 	 499)
 
 (defn internal-server-error
-	 "Internal server error"
+	 "Internal Server Error"
 	 []
 	 500)
 

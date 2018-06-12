@@ -104,11 +104,13 @@
        url (:url params-map)
        request-method (or (:request-method params-map)
                           "POST")
-       request-header-map (or (:request-header-map params-map)
-                              {(rh/accept)       (mt/text-plain)
-                               (eh/content-type) (mt/text-plain)})
-       request-property-map (or (:request-property-map params-map)
-                                {"responseType" (mt/text-plain)})
+       request-header-map (conj
+                            {(rh/accept) (mt/text-plain)
+                             (eh/content-type) (mt/text-plain)}
+                            (:request-header-map params-map))
+       request-property-map (conj
+                              {"responseType" (mt/text-plain)}
+                              (:request-property-map params-map))
        entity (:entity params-map)
        entity-fn-params (:entity-fn-params params-map)
        entity (if (fn? entity)
