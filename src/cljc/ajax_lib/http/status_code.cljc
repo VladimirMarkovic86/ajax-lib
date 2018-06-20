@@ -4,6 +4,7 @@
  ""
  [status]
  (case status
+   101 "101 Switching protocols"
    200 "200 OK"
    404 "404 Not Found"
    500 "500 Internal Server Error"
