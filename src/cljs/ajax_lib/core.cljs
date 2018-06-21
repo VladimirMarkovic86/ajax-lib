@@ -33,6 +33,7 @@
          success-fn (if success-fn
                       success-fn
                       (fn [] ))]
+     (.log js/console xhr)
      (success-fn xhr params-map))
    (let [error-fn (:error-fn params-map)
          error-fn (if error-fn
