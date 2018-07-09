@@ -1,14 +1,14 @@
 (ns ajax-lib.http.status-code)
 
 (defn status-code
- ""
- [status]
- (case status
-   101 "101 Switching protocols"
-   200 "200 OK"
-   404 "404 Not Found"
-   500 "500 Internal Server Error"
-   "404 Not Found"))
+  "Return string value for particular status number"
+  [status]
+  (case status
+    101 "101 Switching protocols"
+    200 "200 OK"
+    404 "404 Not Found"
+    500 "500 Internal Server Error"
+    "404 Not Found"))
 
 (defn continue
 	 "Continue"
@@ -324,5 +324,4 @@
 	 "Network Connect Timeout Error"
 	 []
 	 599)
-
 
