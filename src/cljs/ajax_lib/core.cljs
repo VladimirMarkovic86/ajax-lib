@@ -177,7 +177,7 @@
    ))
 
 (defn sjax
-  ""
+  "Synchronous javascript and XML"
   [params-map]
   (let [xhr (js/XMLHttpRequest.)
         url (:url params-map)
