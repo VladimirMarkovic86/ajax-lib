@@ -177,7 +177,9 @@
    ))
 
 (defn sjax
-  "Synchronous javascript and XML"
+  "Synchronous javascript and XML
+   
+   Same as ajax, except this function waits for server response"
   [params-map]
   (let [xhr (js/XMLHttpRequest.)
         url (:url params-map)
