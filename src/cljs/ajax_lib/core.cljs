@@ -6,13 +6,22 @@
 
 (defn get-response
   "Get response from XMLHttpRequest"
-  [xhr]
+  [xhr
+   & [raw]]
   (try
-    (reader/read-string
-      (aget xhr "response"))
+    (if raw
+      (aget xhr "response")
+      (reader/read-string
+        (aget xhr "response"))
+     )
     (catch js/Error e
-      (.log js/console e))
-   ))
+      (.log
+        js/console
+        (aget
+          e
+          "message"))
+     ))
+ )
 
 (defn ajax-error
   "Handle details error"
@@ -42,8 +51,8 @@
         params-map))
     (let [error-fn (:error-fn params-map)
           error-fn (if error-fn
-                    error-fn
-                    ajax-error)]
+                     error-fn
+                     ajax-error)]
       (case (aget xhr "status")
         1 (.log js/console "OPENED")
         2 (.log js/console "HEADERS_RECEIVED")
@@ -141,7 +150,9 @@
     (aset
       xhr
       "onload"
-      #(onload xhr params-map))
+      #(onload
+         xhr
+         params-map))
   ;    (aset xhr "onreadystatechange" onready)
   ;    (aset xhr "onprogress" onprogress)
     (.open
@@ -157,8 +168,66 @@
       (set-request-property
         xhr
         [k v]))
-    (.send
+    (if entity
+      (.send
+        xhr
+        entity)
+      (.send
+        xhr))
+   ))
+
+(defn sjax
+  ""
+  [params-map]
+  (let [xhr (js/XMLHttpRequest.)
+        url (:url params-map)
+        request-method (or (:request-method params-map)
+                           "POST")
+        request-header-map (conj
+                             {(rh/accept) (mt/text-plain)
+                              (eh/content-type) (mt/text-plain)}
+                             (:request-header-map params-map))
+        request-property-map (conj
+                               {"responseType" (mt/text-plain)}
+                               (:request-property-map params-map))
+        entity (:entity params-map)
+        entity-fn-params (:entity-fn-params params-map)
+        entity (if (fn? entity)
+                 (entity entity-fn-params)
+                 entity)]
+    (.open
       xhr
-      entity))
- )
+      request-method
+      url
+      false)
+    (doseq [[k v] request-header-map]
+      (set-request-header
+        xhr
+        [k v]))
+    (doseq [[k v] request-property-map]
+      (set-request-property
+        xhr
+        [k v]))
+    (if entity
+      (.send
+        xhr
+        entity)
+      (.send
+        xhr))
+    (if (and (= (aget xhr "readyState")
+                4)
+             (= (aget xhr "status")
+                200))
+      (.log
+        js/console
+        xhr)
+      (case (aget xhr "status")
+        1 (.log js/console "OPENED")
+        2 (.log js/console "HEADERS_RECEIVED")
+        3 (.log js/console "LOADING")
+        (.error
+          js/console
+          xhr))
+     )
+   xhr))
 
