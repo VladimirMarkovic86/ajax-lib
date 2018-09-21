@@ -4,6 +4,12 @@
             [ajax-lib.http.entity-header :as eh]
             [cljs.reader :as reader]))
 
+(def base-url
+     (atom nil))
+
+(def with-credentials
+     (atom false))
+
 (defn get-response
   "Get response from XMLHttpRequest"
   [xhr
@@ -132,7 +138,11 @@
                             example: [param1 param2]"
   [params-map]
   (let [xhr (js/XMLHttpRequest.)
-        url (:url params-map)
+        url (if @base-url
+              (str
+                @base-url
+                (:url params-map))
+              (:url params-map))
         request-method (or (:request-method params-map)
                            "POST")
         request-header-map (conj
@@ -141,6 +151,10 @@
                              (:request-header-map params-map))
         request-property-map (conj
                                {"responseType" (mt/text-plain)}
+                               (when @with-credentials
+                                 {"withCredentials" true}))
+        request-property-map (conj
+                               request-property-map
                                (:request-property-map params-map))
         entity (:entity params-map)
         entity-fn-params (:entity-fn-params params-map)
@@ -182,7 +196,11 @@
    Same as ajax, except this function waits for server response"
   [params-map]
   (let [xhr (js/XMLHttpRequest.)
-        url (:url params-map)
+        url (if @base-url
+              (str
+                @base-url
+                (:url params-map))
+              (:url params-map))
         request-method (or (:request-method params-map)
                            "POST")
         request-header-map (conj
@@ -191,6 +209,10 @@
                              (:request-header-map params-map))
         request-property-map (conj
                                {"responseType" (mt/text-plain)}
+                               (when @with-credentials
+                                 {"withCredentials" true}))
+        request-property-map (conj
+                               request-property-map
                                (:request-property-map params-map))
         entity (:entity params-map)
         entity-fn-params (:entity-fn-params params-map)
