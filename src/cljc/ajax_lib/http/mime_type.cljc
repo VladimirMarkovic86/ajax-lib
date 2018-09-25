@@ -2,7 +2,7 @@
 
 ; https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 
-; text -	Represents any document that contains text and is theoretically human readable
+; text - Represents any document that contains text and is theoretically human readable
 
 (defn text-plain
   ""
@@ -24,7 +24,7 @@
   []
   "text/javascript")
 
-; image -	Represents any kind of images. Videos are not included, though animated images (like animated gif) are described with an image type.
+; image - Represents any kind of images. Videos are not included, though animated images (like animated gif) are described with an image type.
 
 (defn image-jpeg
   ""
@@ -51,7 +51,7 @@
   []
   "image/webp")
 
-; audio -	Represents any kind of audio files
+; audio - Represents any kind of audio files
 
 (defn audio-mpeg
   ""
@@ -104,7 +104,7 @@
   []
   "audio/*")
 
-; video -	Represents any kind of video files
+; video - Represents any kind of video files
 
 (defn video-mp4
   ""
@@ -125,7 +125,7 @@
   []
   "video/ogg")
 
-; application -	Represents any kind of binary data.
+; application - Represents any kind of binary data.
 
 ; Most web servers send unknown-type resources using the default application/octet-stream MIME type
 
