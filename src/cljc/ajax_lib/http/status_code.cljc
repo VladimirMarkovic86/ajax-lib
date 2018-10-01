@@ -6,6 +6,7 @@
   (case status
     101 "101 Switching protocols"
     200 "200 OK"
+    201 "201 Created"
     403 "403 Forbidden"
     404 "404 Not Found"
     500 "500 Internal Server Error"
