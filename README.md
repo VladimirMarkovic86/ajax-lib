@@ -7,7 +7,7 @@ AJAX library is clojurescript project that takes clojure map as function paramet
 You can use this project as dependencie in clojure projects by listing it in project.clj
 
 ```
-[org.clojars.vladimirmarkovic/ajax-lib "0.1.0"]
+[org.clojars.vladimirmarkovic86/ajax-lib "0.1.0"]
 ```
 
 ## Authors
