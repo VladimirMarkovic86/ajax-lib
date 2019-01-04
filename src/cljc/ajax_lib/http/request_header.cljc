@@ -29,7 +29,7 @@
   "Accept-Encoding")
 
 (defn accept-language
-  "Accept language request-header field is ismilar to Accept, but restricts to set of natural languages that are preferred as a response to the request.
+  "Accept language request-header field is similar to Accept, but restricts to set of natural languages that are preferred as a response to the request.
  
   example: da, en-gb;q=0.8, en;q=0.7
  

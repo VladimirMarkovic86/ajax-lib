@@ -16,16 +16,17 @@
    & [raw]]
   (try
     (if raw
-      (aget xhr "response")
+      (.-response
+        xhr)
       (reader/read-string
-        (aget xhr "response"))
+        (.-response
+          xhr))
      )
     (catch js/Error e
       (.log
         js/console
-        (aget
-          e
-          "message"))
+        (.-message
+          e))
      ))
  )
 
@@ -37,13 +38,15 @@
     (.error js/console error-message))
  )
 
-(defn- onload
+(defn onload
   "Ajax onload function"
   [xhr
    params-map]
-  (if (and (= (aget xhr "readyState")
+  (if (and (= (.-readyState
+                xhr)
               4)
-           (= (aget xhr "status")
+           (= (.-status
+                xhr)
               200))
     (let [success-fn (:success-fn params-map)
           success-fn (if success-fn
@@ -59,7 +62,8 @@
           error-fn (if error-fn
                      error-fn
                      ajax-error)]
-      (case (aget xhr "status")
+      (case (.-status
+              xhr)
         1 (.log js/console "OPENED")
         2 (.log js/console "HEADERS_RECEIVED")
         3 (.log js/console "LOADING")
@@ -72,18 +76,21 @@
        ))
     ))
 
-(defn- onready
+(defn onready
   "Ajax onreadystatechange function"
   [xhr
    params-map]
-  (if (and (= (aget xhr "readyState")
+  (if (and (= (.-readyState
+                xhr)
               4)
-           (= (aget xhr "status")
+           (= (.-status
+                xhr)
               200))
     ((:success-fn params-map)
       xhr
       params-map)
-    (case (aget xhr "readyState")
+    (case (.-readyState
+            xhr)
       1 (.log js/console "OPENED")
       2 (.log js/console "HEADERS_RECEIVED")
       3 (.log js/console "LOADING")
@@ -92,7 +99,7 @@
         params-map))
    ))
 
-(defn- set-request-header
+(defn set-request-header
   "Set request header"
   [xhr
    [key value]]
@@ -101,7 +108,7 @@
     key
     value))
 
-(defn- set-request-property
+(defn set-request-property
   "Set request property"
   [xhr
    [key value]]
@@ -238,14 +245,17 @@
         entity)
       (.send
         xhr))
-    (if (and (= (aget xhr "readyState")
+    (if (and (= (.-readyState
+                  xhr)
                 4)
-             (= (aget xhr "status")
+             (= (.-status
+                  xhr)
                 200))
       (.log
         js/console
         xhr)
-      (case (aget xhr "status")
+      (case (.-status
+              xhr)
         1 (.log js/console "OPENED")
         2 (.log js/console "HEADERS_RECEIVED")
         3 (.log js/console "LOADING")

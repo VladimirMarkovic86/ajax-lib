@@ -1,4 +1,4 @@
-(defproject org.clojars.vladimirmarkovic86/ajax-lib "0.1.1"
+(defproject org.clojars.vladimirmarkovic86/ajax-lib "0.1.2"
   :description "Simple AJAX library"
   :url "https://github.com/VladimirMarkovic86/ajax-lib"
   :license {:name "Eclipse Public License"
