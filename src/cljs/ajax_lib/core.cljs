@@ -52,9 +52,10 @@
           success-fn (if success-fn
                        success-fn
                        (fn [] ))]
-      (.log
-        js/console
-        xhr)
+      (when (:log-it params-map)
+        (.log
+          js/console
+          xhr))
       (success-fn
         xhr
         params-map))
@@ -142,7 +143,8 @@
   :request-property-map    Define map with key value pairs for setting property values
   :entity                  Define content that you want to send
   :entity-fn-params        In case entity is a function, define vector of it's params
-                            example: [param1 param2]"
+                            example: [param1 param2]
+  :log-it                  true/false by default nil"
   [params-map]
   (let [xhr (js/XMLHttpRequest.)
         url (if @base-url
@@ -251,9 +253,10 @@
              (= (.-status
                   xhr)
                 200))
-      (.log
-        js/console
-        xhr)
+      (when (:log-it params-map)
+        (.log
+          js/console
+          xhr))
       (case (.-status
               xhr)
         1 (.log js/console "OPENED")
