@@ -8,6 +8,7 @@
     200 "200 OK"
     201 "201 Created"
     204 "204 No content"
+    206 "206 Partial content"
     304 "304 Not modified"
     403 "403 Forbidden"
     404 "404 Not Found"
