@@ -2,6 +2,8 @@
   (:require [ajax-lib.http.mime-type :as mt]
             [ajax-lib.http.request-header :as rh]
             [ajax-lib.http.entity-header :as eh]
+            [ajax-lib.http.request-method :as rm]
+            [ajax-lib.http.request-state :as rs]
             [cljs.reader :as reader]))
 
 (def base-url
@@ -65,9 +67,9 @@
                      ajax-error)]
       (case (.-status
               xhr)
-        1 (.log js/console "OPENED")
-        2 (.log js/console "HEADERS_RECEIVED")
-        3 (.log js/console "LOADING")
+        1 (.log js/console rs/OPENED)
+        2 (.log js/console rs/HEADERS_RECEIVED)
+        3 (.log js/console rs/LOADING)
         (do (.log
               js/console
               xhr)
@@ -92,9 +94,9 @@
       params-map)
     (case (.-readyState
             xhr)
-      1 (.log js/console "OPENED")
-      2 (.log js/console "HEADERS_RECEIVED")
-      3 (.log js/console "LOADING")
+      1 (.log js/console rs/OPENED)
+      2 (.log js/console rs/HEADERS_RECEIVED)
+      3 (.log js/console rs/LOADING)
       ((:error-fn params-map)
         xhr
         params-map))
@@ -153,7 +155,7 @@
                 (:url params-map))
               (:url params-map))
         request-method (or (:request-method params-map)
-                           "POST")
+                           rm/POST)
         request-header-map (conj
                              {(rh/accept) (mt/text-plain)
                               (eh/content-type) (mt/text-plain)}
@@ -211,7 +213,7 @@
                 (:url params-map))
               (:url params-map))
         request-method (or (:request-method params-map)
-                           "POST")
+                           rm/POST)
         request-header-map (conj
                              {(rh/accept) (mt/text-plain)
                               (eh/content-type) (mt/text-plain)}
@@ -259,9 +261,9 @@
           xhr))
       (case (.-status
               xhr)
-        1 (.log js/console "OPENED")
-        2 (.log js/console "HEADERS_RECEIVED")
-        3 (.log js/console "LOADING")
+        1 (.log js/console rs/OPENED)
+        2 (.log js/console rs/HEADERS_RECEIVED)
+        3 (.log js/console rs/LOADING)
         (.error
           js/console
           xhr))
