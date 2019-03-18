@@ -16,8 +16,9 @@
   "Get response from XMLHttpRequest"
   [xhr]
   (try
-    (let [clj-response-type (.-cljResponseType
-                              xhr)]
+    (let [clj-response-type (aget
+                              xhr
+                              "cljResponseType")]
       (if (= clj-response-type
              (mt/text-clojurescript))
         (reader/read-string
