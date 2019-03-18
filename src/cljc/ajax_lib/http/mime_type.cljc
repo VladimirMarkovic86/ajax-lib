@@ -24,6 +24,11 @@
   []
   "text/javascript")
 
+(defn text-clojurescript
+  ""
+  []
+  "text/clojurescript")
+
 ; image - Represents any kind of images. Videos are not included, though animated images (like animated gif) are described with an image type.
 
 (defn image-jpeg
@@ -158,6 +163,11 @@
   ""
   []
   "application/pdf")
+
+(defn application-clojurescript
+  ""
+  []
+  "application/clojurescript")
 
 ; An audio or video file using the OGG container format. Theora is the usual video codec used within it; Vorbis is the usual audio codec.
 

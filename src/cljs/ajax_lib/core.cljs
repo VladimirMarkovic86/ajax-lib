@@ -14,13 +14,15 @@
 
 (defn get-response
   "Get response from XMLHttpRequest"
-  [xhr
-   & [raw]]
+  [xhr]
   (try
-    (if raw
-      (.-response
-        xhr)
-      (reader/read-string
+    (let [clj-response-type (.-cljResponseType
+                              xhr)]
+      (if (= clj-response-type
+             (mt/text-clojurescript))
+        (reader/read-string
+          (.-response
+            xhr))
         (.-response
           xhr))
      )
@@ -157,11 +159,12 @@
         request-method (or (:request-method params-map)
                            rm/POST)
         request-header-map (conj
-                             {(rh/accept) (mt/text-plain)
-                              (eh/content-type) (mt/text-plain)}
+                             {(rh/accept) (mt/text-clojurescript)
+                              (eh/content-type) (mt/text-clojurescript)}
                              (:request-header-map params-map))
         request-property-map (conj
-                               {"responseType" (mt/text-plain)}
+                               {"responseType" (mt/text-clojurescript)
+                                "cljResponseType" (mt/text-clojurescript)}
                                (when @with-credentials
                                  {"withCredentials" true}))
         request-property-map (conj
@@ -215,11 +218,12 @@
         request-method (or (:request-method params-map)
                            rm/POST)
         request-header-map (conj
-                             {(rh/accept) (mt/text-plain)
-                              (eh/content-type) (mt/text-plain)}
+                             {(rh/accept) (mt/text-clojurescript)
+                              (eh/content-type) (mt/text-clojurescript)}
                              (:request-header-map params-map))
         request-property-map (conj
-                               {"responseType" (mt/text-plain)}
+                               {"responseType" (mt/text-clojurescript)
+                                "cljResponseType" (mt/text-clojurescript)}
                                (when @with-credentials
                                  {"withCredentials" true}))
         request-property-map (conj
