@@ -56,6 +56,11 @@
   []
   "image/webp")
 
+(defn image-x-icon
+  ""
+  []
+  "image/x-icon")
+
 ; audio - Represents any kind of audio files
 
 (defn audio-mpeg
@@ -189,4 +194,41 @@
   ""
   []
   "multipart/byteranges")
+
+(defn mime-types-set
+  "Mime types in set"
+  []
+  #{(text-plain)
+    (text-html)
+    (text-css)
+    (text-javascript)
+    (text-clojurescript)
+    (image-jpeg)
+    (image-png)
+    (image-gif)
+    (image-bmp)
+    (image-webp)
+    (image-x-icon)
+    (audio-mpeg)
+    (audio-ogg)
+    (audio-midi)
+    (audio-webm)
+    (audio-wave)
+    (audio-wav)
+    (audio-x-wav)
+    (audio-x-pn-wav)
+    (audio-all)
+    (video-mp4)
+    (video-webm)
+    (video-ogg)
+    (application-octet-stream)
+    (application-pkcs12)
+    (application-vnd-mspowerpoint)
+    (application-xhtml-xml)
+    (application-xml)
+    (application-pdf)
+    (application-clojurescript)
+    (application-ogg)
+    (multipart-form-data)
+    (multipart-byteranges)})
 
