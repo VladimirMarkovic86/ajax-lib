@@ -209,6 +209,22 @@
   []
   "Set-Cookie")
 
+(defn set-visible-cookie
+  "Set visible cookie response-header custom field is used to send cookies from the server to the user agent and to be visible in JavaScript.
+ 
+  example: <cookie-name>=<cookie-value> [; Expires=<date>]
+                      [; Max-age=<non-zero-digit>]
+                      [; Domain=<domain-value>]
+                      [; Path=<path-value>]
+                      [; Secure]
+                      [; HttpOnly]
+                      [; SameSite=Strict]
+                      [; SameSite=Lax]
+ 
+  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie"
+  []
+  "Set-Visible-Cookie")
+
 (defn set-cookie2
   "Set cookie 2 response-header field is used to send cookies from the server to the user agent, but has been depricated by the specification. Use Set-Cookie instead. This feature is obsolete. Although it may still work in some browsers, its use is discouraged since it could be removed at any time. Try to avoid using it.
  
