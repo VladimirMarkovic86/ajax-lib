@@ -17,10 +17,18 @@
 (defn set-cookie
   "Set cookie in browser"
   [cookie-value]
-  (aset
-    js/document
-    "cookie"
-    cookie-value))
+  (when (and cookie-value
+             (string?
+               cookie-value)
+             (not
+               (cstring/blank?
+                 cookie-value))
+         )
+    (aset
+      js/document
+      "cookie"
+      cookie-value))
+ )
 
 (defn get-response
   "Get response from XMLHttpRequest"
@@ -38,7 +46,7 @@
           xhr))
      )
     (catch js/Error e
-      (.log
+      (.error
         js/console
         (.-message
           e))
@@ -48,102 +56,151 @@
 (defn ajax-error
   "Handle details error"
   [xhr]
-  (let [response (get-response xhr)
+  (let [response (get-response
+                   xhr)
         error-message (:error-message response)]
-    (.error js/console error-message))
- )
+    (.error
+      js/console
+      error-message)
+    error-message))
 
 (defn onload
   "Ajax onload function"
   [xhr
    params-map]
-  (if (and (= (.-readyState
+  (try
+    (if (and (= (.-readyState
+                  xhr)
+                4)
+             (= (.-status
+                  xhr)
+                200))
+      (let [success-fn (:success-fn params-map)
+            success-fn (if success-fn
+                         success-fn
+                         (fn [] ))
+            set-visible-cookie (.getResponseHeader
+                                 xhr
+                                 (rsh/set-visible-cookie))]
+        (when (and set-visible-cookie
+                   (string?
+                     set-visible-cookie)
+                   (not
+                     (cstring/blank?
+                       set-visible-cookie))
+               )
+          (set-cookie
+            set-visible-cookie))
+        (when (:log-it params-map)
+          (.log
+            js/console
+            xhr))
+        (success-fn
+          xhr
+          params-map)
+        "success")
+      (let [error-fn (:error-fn params-map)
+            error-fn (if error-fn
+                       error-fn
+                       ajax-error)]
+        (case (.-status
                 xhr)
-              4)
-           (= (.-status
+          1 (.log js/console rs/OPENED)
+          2 (.log js/console rs/HEADERS_RECEIVED)
+          3 (.log js/console rs/LOADING)
+          (do (.log
+                js/console
                 xhr)
-              200))
-    (let [success-fn (:success-fn params-map)
-          success-fn (if success-fn
-                       success-fn
-                       (fn [] ))
-          set-visible-cookie (.getResponseHeader
-                               xhr
-                               (rsh/set-visible-cookie))]
-      (when (and set-visible-cookie
-                 (string?
-                   set-visible-cookie)
-                 (not
-                   (cstring/blank?
-                     set-visible-cookie))
-             )
-        (set-cookie
-          set-visible-cookie))
-      (when (:log-it params-map)
-        (.log
-          js/console
-          xhr))
-      (success-fn
-        xhr
-        params-map))
-    (let [error-fn (:error-fn params-map)
-          error-fn (if error-fn
-                     error-fn
-                     ajax-error)]
-      (case (.-status
-              xhr)
-        1 (.log js/console rs/OPENED)
-        2 (.log js/console rs/HEADERS_RECEIVED)
-        3 (.log js/console rs/LOADING)
-        (do (.log
-              js/console
-              xhr)
-            (error-fn
-              xhr
-              params-map))
-       ))
-    ))
+              (error-fn
+                xhr
+                params-map))
+         )
+        "error"))
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
 (defn onready
   "Ajax onreadystatechange function"
   [xhr
    params-map]
-  (if (and (= (.-readyState
+  (try
+    (if (and (= (.-readyState
+                  xhr)
+                4)
+             (= (.-status
+                  xhr)
+                200))
+      (let [success-fn (:success-fn params-map)
+            success-fn (if (fn?
+                             success-fn)
+                         success-fn
+                         (fn [] ))]
+        (success-fn
+          xhr
+          params-map)
+        "success")
+      (let [error-fn (:error-fn params-map)
+            error-fn (if (fn?
+                           error-fn)
+                       error-fn
+                       (fn [] ))]
+        (case (.-readyState
                 xhr)
-              4)
-           (= (.-status
-                xhr)
-              200))
-    ((:success-fn params-map)
-      xhr
-      params-map)
-    (case (.-readyState
-            xhr)
-      1 (.log js/console rs/OPENED)
-      2 (.log js/console rs/HEADERS_RECEIVED)
-      3 (.log js/console rs/LOADING)
-      ((:error-fn params-map)
-        xhr
-        params-map))
-   ))
+          1 (.log js/console rs/OPENED)
+          2 (.log js/console rs/HEADERS_RECEIVED)
+          3 (.log js/console rs/LOADING)
+          (error-fn
+            xhr
+            params-map))
+        "error"))
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
 (defn set-request-header
   "Set request header"
   [xhr
-   [key value]]
-  (.setRequestHeader
-    xhr
-    key
-    value))
+   [header-name
+    header-value]]
+  (try
+    (.setRequestHeader
+      xhr
+      header-name
+      header-value)
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
 (defn set-request-property
   "Set request property"
   [xhr
-   [key value]]
-  (aset
-    xhr
-    key
-    value))
+   [property-name
+    property-value]]
+  (try
+    (aset
+      xhr
+      property-name
+      property-value)
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
 (defn ajax
   "Universal ajax call
@@ -173,127 +230,144 @@
                             example: [param1 param2]
   :log-it                  true/false by default nil"
   [params-map]
-  (let [xhr (js/XMLHttpRequest.)
-        url (if @base-url
-              (str
-                @base-url
+  (try
+    (let [xhr (js/XMLHttpRequest.)
+          url (if @base-url
+                (str
+                  @base-url
+                  (:url params-map))
                 (:url params-map))
-              (:url params-map))
-        request-method (or (:request-method params-map)
-                           rm/POST)
-        request-header-map (conj
-                             {(rh/accept) (mt/text-clojurescript)
-                              (eh/content-type) (mt/text-clojurescript)}
-                             (:request-header-map params-map))
-        request-property-map (conj
-                               {"responseType" (mt/text-clojurescript)
-                                "cljResponseType" (mt/text-clojurescript)}
-                               (when @with-credentials
-                                 {"withCredentials" true}))
-        request-property-map (conj
-                               request-property-map
-                               (:request-property-map params-map))
-        entity (:entity params-map)
-        entity-fn-params (:entity-fn-params params-map)
-        entity (if (fn? entity)
-                 (entity entity-fn-params)
-                 entity)]
-    (aset
-      xhr
-      "onload"
-      #(onload
-         xhr
-         params-map))
-  ;    (aset xhr "onreadystatechange" onready)
-  ;    (aset xhr "onprogress" onprogress)
-    (.open
-      xhr
-      request-method
-      url
-      true)
-    (doseq [[k v] request-header-map]
-      (set-request-header
+          request-method (or (:request-method params-map)
+                             rm/POST)
+          request-header-map (conj
+                               {(rh/accept) (mt/text-clojurescript)
+                                (eh/content-type) (mt/text-clojurescript)}
+                               (:request-header-map params-map))
+          request-property-map (conj
+                                 {"responseType" (mt/text-clojurescript)
+                                  "cljResponseType" (mt/text-clojurescript)}
+                                 (when @with-credentials
+                                   {"withCredentials" true}))
+          request-property-map (conj
+                                 request-property-map
+                                 (:request-property-map params-map))
+          entity (:entity params-map)
+          entity-fn-params (:entity-fn-params params-map)
+          entity (if (fn? entity)
+                   (entity
+                     entity-fn-params)
+                   entity)]
+      (aset
         xhr
-        [k v]))
-    (doseq [[k v] request-property-map]
-      (set-request-property
+        "onload"
+        #(onload
+           xhr
+           params-map))
+    ;    (aset xhr "onreadystatechange" onready)
+    ;    (aset xhr "onprogress" onprogress)
+      (.open
         xhr
-        [k v]))
-    (if entity
-      (.send
-        xhr
-        entity)
-      (.send
-        xhr))
-   ))
+        request-method
+        url
+        true)
+      (doseq [[k v] request-header-map]
+        (set-request-header
+          xhr
+          [k v]))
+      (doseq [[k v] request-property-map]
+        (set-request-property
+          xhr
+          [k v]))
+      (if entity
+        (.send
+          xhr
+          entity)
+        (.send
+          xhr))
+     )
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
 (defn sjax
   "Synchronous javascript and XML
    
    Same as ajax, except this function waits for server response"
   [params-map]
-  (let [xhr (js/XMLHttpRequest.)
-        url (if @base-url
-              (str
-                @base-url
+  (try
+    (let [xhr (js/XMLHttpRequest.)
+          url (if @base-url
+                (str
+                  @base-url
+                  (:url params-map))
                 (:url params-map))
-              (:url params-map))
-        request-method (or (:request-method params-map)
-                           rm/POST)
-        request-header-map (conj
-                             {(rh/accept) (mt/text-clojurescript)
-                              (eh/content-type) (mt/text-clojurescript)}
-                             (:request-header-map params-map))
-        request-property-map (conj
-                               {"responseType" (mt/text-clojurescript)
-                                "cljResponseType" (mt/text-clojurescript)}
-                               (when @with-credentials
-                                 {"withCredentials" true}))
-        request-property-map (conj
-                               request-property-map
-                               (:request-property-map params-map))
-        entity (:entity params-map)
-        entity-fn-params (:entity-fn-params params-map)
-        entity (if (fn? entity)
-                 (entity entity-fn-params)
-                 entity)]
-    (.open
-      xhr
-      request-method
-      url
-      false)
-    (doseq [[k v] request-header-map]
-      (set-request-header
+          request-method (or (:request-method params-map)
+                             rm/POST)
+          request-header-map (conj
+                               {(rh/accept) (mt/text-clojurescript)
+                                (eh/content-type) (mt/text-clojurescript)}
+                               (:request-header-map params-map))
+          request-property-map (conj
+                                 {"responseType" (mt/text-clojurescript)
+                                  "cljResponseType" (mt/text-clojurescript)}
+                                 (when @with-credentials
+                                   {"withCredentials" true}))
+          request-property-map (conj
+                                 request-property-map
+                                 (:request-property-map params-map))
+          entity (:entity params-map)
+          entity-fn-params (:entity-fn-params params-map)
+          entity (if (fn? entity)
+                   (entity entity-fn-params)
+                   entity)]
+      (.open
         xhr
-        [k v]))
-    (doseq [[k v] request-property-map]
-      (set-request-property
-        xhr
-        [k v]))
-    (if entity
-      (.send
-        xhr
-        entity)
-      (.send
-        xhr))
-    (if (and (= (.-readyState
-                  xhr)
-                4)
-             (= (.-status
-                  xhr)
-                200))
-      (when (:log-it params-map)
-        (.log
-          js/console
+        request-method
+        url
+        false)
+      (doseq [[k v] request-header-map]
+        (set-request-header
+          xhr
+          [k v]))
+      (doseq [[k v] request-property-map]
+        (set-request-property
+          xhr
+          [k v]))
+      (if entity
+        (.send
+          xhr
+          entity)
+        (.send
           xhr))
-      (case (.-status
-              xhr)
-        1 (.log js/console rs/OPENED)
-        2 (.log js/console rs/HEADERS_RECEIVED)
-        3 (.log js/console rs/LOADING)
-        (.error
-          js/console
-          xhr))
-     )
-   xhr))
+      (if (and (= (.-readyState
+                    xhr)
+                  4)
+               (= (.-status
+                    xhr)
+                  200))
+        (when (:log-it params-map)
+          (.log
+            js/console
+            xhr))
+        (case (.-status
+                xhr)
+          1 (.log js/console rs/OPENED)
+          2 (.log js/console rs/HEADERS_RECEIVED)
+          3 (.log js/console rs/LOADING)
+          (.error
+            js/console
+            xhr))
+       )
+     xhr)
+    (catch js/Error e
+      (.error
+        js/console
+        (.-message
+          e))
+     ))
+ )
 
