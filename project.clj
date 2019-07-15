@@ -1,4 +1,4 @@
-(defproject org.clojars.vladimirmarkovic86/ajax-lib "0.1.13"
+(defproject org.clojars.vladimirmarkovic86/ajax-lib "0.1.14"
   :description "Simple AJAX library"
   :url "https://github.com/VladimirMarkovic86/ajax-lib"
   :license {:name "Eclipse Public License"
@@ -11,9 +11,7 @@
     
   :source-paths ["src/cljc" "src/cljs"]
   
-  :jar-exclusions [#"^public/"
-                   #"README.md$"
-                   #"LICENSE$"]
+  :jar-exclusions [#"^public/"]
 
   :plugins [[lein-cljsbuild  "1.1.7"]
             [lein-doo "0.1.11"]
